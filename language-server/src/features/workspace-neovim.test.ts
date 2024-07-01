@@ -45,7 +45,7 @@ describe("Feature - workspace (neovim)", () => {
 
     // Block for a while to allow InitializedNotification time to finish.
     // This is only needed for the node-based workspace watching used for neovim
-    await wait(40000); // Increased wait time for reliability on Windows
+    await wait(10000); // Increased wait time for reliability on Windows
   });
 
   afterAll(async () => {
