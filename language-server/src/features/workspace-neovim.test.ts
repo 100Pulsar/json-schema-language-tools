@@ -82,6 +82,7 @@ describe("Feature - workspace (neovim)", () => {
     });
 
     const subjectSchemaUri = resolveIri("./subject.schema.json", `${workspaceFolder}/`);
+    console.log(`Resolved subject schema URI: ${subjectSchemaUri}`);
     await touch(fileURLToPath(subjectSchemaUri));
 
     expect(await validatedSchemas).to.eql([subjectSchemaUri]);
@@ -98,7 +99,8 @@ const wait = async (delay: number) => {
   });
 };
 
-const touch = (path: string) => {
+const touch = async (path: string) => {
   const time = new Date();
-  return utimes(path, time, time);
+  await utimes(path, time, time);
+  console.log(`File at ${path} touched at ${time.toISOString()}`);
 };
