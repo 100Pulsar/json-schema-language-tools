@@ -31,7 +31,7 @@ describe("Feature - workspace (neovim)", () => {
       capabilities: {
         workspace: {
           didChangeWatchedFiles: {
-            dynamicRegistration: false
+            dynamicRegistration: true
           }
         }
       },
@@ -45,7 +45,7 @@ describe("Feature - workspace (neovim)", () => {
 
     // Block for a while to allow InitializedNotification time to finish.
     // This is only needed for the node-based workspace watching used for neovim
-    await wait(1000); // Increased wait time for reliability on Windows
+    // await wait(1000); // Increased wait time for reliability on Windows
   });
 
   afterAll(async () => {
@@ -100,11 +100,11 @@ describe("Feature - workspace (neovim)", () => {
   });
 });
 
-const wait = async (delay: number) => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-};
+// const wait = async (delay: number) => {
+//   return new Promise((resolve) => {
+//     setTimeout(resolve, delay);
+//   });
+// };
 
 const touch = async (path: string) => {
   const time = new Date();
