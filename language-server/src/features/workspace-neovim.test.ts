@@ -49,7 +49,7 @@ describe("Feature - workspace (neovim)", () => {
   });
 
   afterAll(async () => {
-    // client.dispose();
+    client.dispose();
     await tearDownWorkspace(workspaceFolder);
   });
 
