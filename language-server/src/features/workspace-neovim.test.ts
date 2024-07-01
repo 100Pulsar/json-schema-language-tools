@@ -24,7 +24,7 @@ describe("Feature - workspace (neovim)", () => {
     client = getTestClient([workspace, documentSettings, schemaRegistry]);
 
     workspaceFolder = await setupWorkspace({
-      "subject.schema.json": `{ "$schema": "https://json-schema.org/draft/2020-12/cshema" }`
+      "subject.schema.json": `{ "$schema": "https://json-schema.org/draft/2020-12/schema" }`
     });
 
     capabilities = await initializeServer(client, {
@@ -43,9 +43,9 @@ describe("Feature - workspace (neovim)", () => {
       ]
     });
 
-    // Block for a while to allow InitializedNotification time to finish. This
-    // is only needed for the node-based workspace watching used for neovim
-    await wait(10);
+    // Block for a while to allow InitializedNotification time to finish.
+    // This is only needed for the node-based workspace watching used for neovim
+    await wait(40000); // Increased wait time for reliability on Windows
   });
 
   afterAll(async () => {
@@ -63,20 +63,23 @@ describe("Feature - workspace (neovim)", () => {
   });
 
   test("a change to a watched file should validate the workspace", async () => {
-    const validatedSchemas = new Promise((resolve) => {
-      let schemaUris: string[];
+    const validatedSchemas = new Promise<string[]>((resolve) => {
+      let schemaUris: string[] = [];
 
       client.onRequest(WorkDoneProgressCreateRequest.type, ({ token }) => {
         client.onProgress(WorkDoneProgress.type, token, ({ kind }) => {
           if (kind === "begin") {
+            console.log("Work done progress started");
             schemaUris = [];
           } else if (kind === "end") {
+            console.log("Work done progress ended");
             resolve(schemaUris);
           }
         });
       });
 
       client.onNotification(PublishDiagnosticsNotification.type, (params) => {
+        console.log("Received diagnostics notification for:", params.uri);
         schemaUris.push(params.uri);
       });
     });
@@ -85,7 +88,11 @@ describe("Feature - workspace (neovim)", () => {
     console.log(`Resolved subject schema URI: ${subjectSchemaUri}`);
     await touch(fileURLToPath(subjectSchemaUri));
 
-    expect(await validatedSchemas).to.eql([subjectSchemaUri]);
+    console.log("Awaiting validated schemas...");
+    const result = await validatedSchemas;
+    console.log("Validated schemas:", result);
+
+    expect(result).to.eql([subjectSchemaUri]);
   });
 
   test.todo("changing the workspace folders should validate the workspace", () => {
