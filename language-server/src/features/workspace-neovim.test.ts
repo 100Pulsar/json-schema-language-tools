@@ -87,11 +87,11 @@ describe("Feature - workspace (neovim)", () => {
     const subjectSchemaUri = resolveIri("./subject.schema.json", `${workspaceFolder}/`);
     console.log(`Resolved subject schema URI: ${subjectSchemaUri}`);
     await touch(fileURLToPath(subjectSchemaUri));
-
     console.log("Awaiting validated schemas...");
     const result = await validatedSchemas;
-    console.log("Validated schemas:", result);
-
+    console.log(`Validated schemas: ${JSON.stringify(result)}`);
+    console.log(`Expected: ${JSON.stringify([subjectSchemaUri])}`);
+    console.log(`Actual: ${JSON.stringify(result)}`);
     expect(result).to.eql([subjectSchemaUri]);
   });
 
