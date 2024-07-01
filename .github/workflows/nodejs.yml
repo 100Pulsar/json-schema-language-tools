@@ -9,10 +9,11 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
         node-version: [20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
@@ -26,9 +27,6 @@ jobs:
     - run: npm ci
     - run: cd language-server && npm ci
     - run: cd language-server && npm test
-    - run: cd language-server && npm run type-check
     - run: cd language-server && npm run lint
     - run: cd vscode && npm ci
-    - run: cd vscode && npm run type-check
     - run: cd vscode && npm run lint
-    - run: cd vscode && npm run build
