@@ -31,7 +31,7 @@ describe("Feature - workspace (neovim)", () => {
       capabilities: {
         workspace: {
           didChangeWatchedFiles: {
-            dynamicRegistration: false
+            dynamicRegistration: true
           }
         }
       },
@@ -49,7 +49,7 @@ describe("Feature - workspace (neovim)", () => {
   });
 
   afterAll(async () => {
-    client.dispose();
+    // client.dispose();
     await tearDownWorkspace(workspaceFolder);
   });
 
